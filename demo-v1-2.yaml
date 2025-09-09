@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: Demo API
+  version: '1.2'
+  description: Demo API with v1 and v2 stacks endpoints
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /api/v1/stacks:
+    get:
+      summary: Get all stacks (v1)
+      description: Retrieve a list of all available stacks (legacy v1 endpoint)
+      operationId: getStacksV1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stack'
+        '500':
+          description: Internal server error
+  /api/v2/stacks:
+    get:
+      summary: Get all stacks (v2)
+      description: Retrieve a list of all available stacks with enhanced information
+      operationId: getStacksV2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StackV2'
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Stack:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the stack
+        name:
+          type: string
+          description: Name of the stack
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+      required:
+        - id
+        - name
+        - created_at
+    StackV2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the stack
+        name:
+          type: string
+          description: Name of the stack
+        description:
+          type: string
+          description: Detailed description of the stack
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        status:
+          type: string
+          enum: [active, inactive, deprecated]
+          description: Current status of the stack
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+        - status

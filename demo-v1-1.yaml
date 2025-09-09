@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: Demo API
+  version: '1.1'
+  description: Demo API with stacks endpoint
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /api/v1/stacks:
+    get:
+      summary: Get all stacks
+      description: Retrieve a list of all available stacks
+      operationId: getStacks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stack'
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Stack:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the stack
+        name:
+          type: string
+          description: Name of the stack
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+      required:
+        - id
+        - name
+        - created_at

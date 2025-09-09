@@ -3,17 +3,87 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Swagger UI</title>
+    <title>API Documentation</title>
     <link rel="stylesheet" type="text/css" href="dist/swagger-ui.css" />
     <link rel="stylesheet" type="text/css" href="dist/index.css" />
     <link rel="icon" type="image/png" href="dist/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="dist/favicon-16x16.png" sizes="16x16" />
+    <style>
+      .swagger-ui .topbar { display: none }
+      .versions {
+        padding: 1em;
+        background: #f8f9fa;
+        margin-bottom: 1em;
+      }
+      .versions button {
+        margin: 0 0.5em;
+        padding: 0.5em 1em;
+        cursor: pointer;
+      }
+      .versions button.active {
+        background: #4990e2;
+        color: white;
+        border: none;
+      }
+    </style>
   </head>
 
   <body>
+    <div class="versions">
+      <button onclick="switchVersion('v1.1')" id="v1.1-btn">Version 1.1</button>
+      <button onclick="switchVersion('v1.2')" id="v1.2-btn">Version 1.2</button>
+    </div>
     <div id="swagger-ui"></div>
     <script src="dist/swagger-ui-bundle.js" charset="UTF-8"> </script>
     <script src="dist/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
-    <script src="dist/swagger-initializer.js" charset="UTF-8"> </script>
+    <script>
+      window.onload = () => {
+        const ui = SwaggerUIBundle({
+          urls: [
+            {
+              name: "Version 1.1",
+              url: "demo-v1-1.yaml"
+            },
+            {
+              name: "Version 1.2",
+              url: "demo-v1-2.yaml"
+            }
+          ],
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+          ],
+          layout: "StandaloneLayout"
+        });
+
+        // Initial button state
+        const urlParams = new URLSearchParams(window.location.search);
+        const version = urlParams.get('urls.primaryName') || "Version 1.1";
+        document.getElementById('v1.1-btn').classList.toggle('active', version === "Version 1.1");
+        document.getElementById('v1.2-btn').classList.toggle('active', version === "Version 1.2");
+
+        window.ui = ui;
+      };
+
+      function switchVersion(version) {
+        const versionMap = {
+          'v1.1': 'Version 1.1',
+          'v1.2': 'Version 1.2'
+        };
+        const displayVersion = versionMap[version];
+        
+        // Update UI
+        window.ui.specActions.updateUrl(displayVersion);
+        
+        // Update button states
+        document.getElementById('v1.1-btn').classList.toggle('active', version === 'v1.1');
+        document.getElementById('v1.2-btn').classList.toggle('active', version === 'v1.2');
+      }
+    </script>
   </body>
 </html>
